@@ -18,8 +18,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.Calendar;
 
 /**
- * Created by User on 2/28/2017.
+ * Created by Jason Zhao on Sept/20/2020.
+ * Copyright is reserved
  */
+
+// This class is similar to Add_item class when it comes to add the info of an item
+// The differences are it will retrieve the previous entry, and it can delete an item
+// Modified and referenced to https://github.com/mitchtabian/SaveReadWriteDeleteSQLite/blob/master/SaveAndDisplaySQL/app/src/main/java/com/tabian/saveanddisplaysql/EditDataActivity.java
 
 public class EditDataActivity extends AppCompatActivity {
 
@@ -35,7 +40,7 @@ public class EditDataActivity extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener mDateSetListener;
 
 
-    DatabaseHelper mDatabaseHelper;
+    public DatabaseHelper mDatabaseHelper;
 
     private String selectedPrice, selectedMaker, selectedDescription, selectedComment, selectedDate;
     private int selectedID;
@@ -60,7 +65,7 @@ public class EditDataActivity extends AppCompatActivity {
         //now get the itemID we passed as an extra
         selectedID = receivedIntent.getIntExtra("id",-1); //NOTE: -1 is just the default value
 
-        //now get the name we passed as an extra
+        //now get the all the data we passed as an extra
         selectedMaker = receivedIntent.getStringExtra("maker");
         selectedPrice = receivedIntent.getStringExtra("price");
         selectedDescription = receivedIntent.getStringExtra("description");
@@ -68,13 +73,13 @@ public class EditDataActivity extends AppCompatActivity {
         selectedDate = receivedIntent.getStringExtra("date");
         date = selectedDate;
 
-        //set the text to show the current selected name
+        //set the text to show the current selected item
         entry_price.setText(selectedPrice);
         entry_maker.setText(selectedMaker);
         entry_description.setText(selectedDescription);
         entry_comment.setText(selectedComment);
 
-
+        //save the new info to database
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,9 +89,10 @@ public class EditDataActivity extends AppCompatActivity {
                 String comment =entry_comment.getText().toString();
 
                 if(price.length() != 0 && maker.length() !=0 && date.length() !=0 && description.length() !=0){
-                    //String comment, int id, String newDate,String newMaker,String newDescription,String newPrice, String newComment
+
+                    // handle the comment entry, since it could be null.
                     if (comment.length() ==0){
-                        comment = "'nothing enter'";
+                        comment = "[nothing enter]";
                     }
                     mDatabaseHelper.updateName(selectedPrice,selectedID,date,maker,description,price,comment);
                     Intent intent = new Intent(EditDataActivity.this, ListDataActivity.class);
@@ -98,10 +104,12 @@ public class EditDataActivity extends AppCompatActivity {
             }
         });
 
+
+        // Delete the Item from database with help from SQL
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDatabaseHelper.deleteName(selectedID,selectedPrice);
+                mDatabaseHelper.deleteItem(selectedID);
                 entry_price.setText("");
                 toastMessage("removed from database");
                 Intent intent = new Intent(EditDataActivity.this, ListDataActivity.class);
@@ -150,12 +158,6 @@ public class EditDataActivity extends AppCompatActivity {
             }
 
         };
-
-
-
-
-
-
 
 
     }

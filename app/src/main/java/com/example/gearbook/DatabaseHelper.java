@@ -9,6 +9,13 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+/**
+ * Created by Jason Zhao on Sept/20/2020.
+ * Copyright is reserved
+ */
+
+//In class does not link to any activity, rather, it handles all the data exchanges with a SQL Database.
+
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG ="DatabaseHelper";
 
@@ -29,17 +36,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-//        String createTable = "CREATE TABLE " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-//                COL2 +" TEXT,"+ COL3 + "TEXT)";
+        //Create a Table with SQL
         String createTable = "CREATE TABLE " + TABLE_NAME + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, maker TEXT, description TEXT, price TEXT, comment TEXT)";
         db.execSQL(createTable);
     }
 
+    //don't need this function, but still need to initialize it
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
 
     }
-
+    //add of the columns into the table, and return whether it is successful,
+    //reference to https://github.com/mitchtabian/SaveReadWriteDeleteSQLite/blob/master/SaveAndDisplaySQL/app/src/main/java/com/tabian/saveanddisplaysql/EditDataActivity.java
     public boolean addData(String date,String maker,String description,String price, String comment) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -62,6 +70,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
         }
     }
+    /**
+     * get all the data  of the item
+     * @param
+     * @return data
+     *
+     */
 
     public Cursor getData(){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -69,6 +83,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor data = db.rawQuery(query, null);
         return data;
     }
+
+    /**
+     * get ID of the item
+     * @param  selectedItem
+     * @return data(ID)
+     *
+     */
     public Cursor getItemID(ArrayList<String> selectedItem){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT " + COL1 + " FROM " + TABLE_NAME +
@@ -76,6 +97,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor data = db.rawQuery(query, new String[]{selectedItem.get(1),selectedItem.get(2)});
         return data;
     }
+
+    /**
+     * get maker and comment of the item
+     * @param  selectedItem
+     * @return data(maker and comment)
+     *
+     */
     public Cursor getMakerCom(ArrayList<String> selectedItem){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT " + "*" + " FROM " + TABLE_NAME +
@@ -84,6 +112,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return data;
     }
 
+    /**
+     * Calculate total price
+     * @param
+     * @return cursor data
+     *
+     */
 
     public Cursor getTotalPrice() {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -113,10 +147,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //    }
 
     /**
-     * Updates the name field
-     * @param
-     * @param id
-     * @param
+     * Updates the all fields
+     * @param price, id, newDate,newMaker,newDescription, newPrice, newComment
+     *
      */
     public void updateName( String price, int id, String newDate,String newMaker,String newDescription,String newPrice, String newComment){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -131,14 +164,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /**
      * Delete from database
      * @param id
-     * @param name
+     *
      */
-    public void deleteName(int id, String name){
+    public void deleteItem(int id){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "DELETE FROM " + TABLE_NAME + " WHERE "
                 + COL1 + " = '" + id + "'";
         Log.d(TAG, "deleteName: query: " + query);
-        Log.d(TAG, "deleteName: Deleting " + name + " from database.");
         db.execSQL(query);
     }
 

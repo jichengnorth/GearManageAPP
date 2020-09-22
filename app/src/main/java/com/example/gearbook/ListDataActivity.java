@@ -18,9 +18,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
+/**
+ * Created by Jason Zhao on Sept/20/2020.
+ * Copyright is reserved
+ */
+
+// this class will handle: 1.list all the items, 2.display only 3 of 5 info, 3.click on each of it
+// 4. get the total price.
+// it is based on List view sturction
+
 public class ListDataActivity extends AppCompatActivity {
+
+    // declare
     private static final String TAG = "ListDataActivity";
-    DatabaseHelper mDatabaseHelper;
+    public DatabaseHelper mDatabaseHelper;
     private ListView mListView;
     private String makerGot;
     private String commentGot;
@@ -38,8 +49,11 @@ public class ListDataActivity extends AppCompatActivity {
         calculateButton =(Button) findViewById(R.id.calculateButton);
         mDatabaseHelper = new DatabaseHelper(this);
 
+        //displace the List view
         populateListView();
 
+
+        // get the total price with a toast message for better protection of privacy
         calculateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,23 +70,24 @@ public class ListDataActivity extends AppCompatActivity {
 
     }
 
+
+    /**
+     * Display the data, and use putExtra to save the data when user click on the row
+     * Modified and reference to https://github.com/mitchtabian/SaveReadWriteDeleteSQLite/blob/master/SaveAndDisplaySQL/app/src/main/java/com/tabian/saveanddisplaysql/ListDataActivity.java
+     *
+     */
+
     private void populateListView() {
         Log.d(TAG,"populateListView: Displaying data in the ListView.");
 
         //get the data and append to a list
         Cursor data = mDatabaseHelper.getData();
 
-//        ArrayList<String> listData = new ArrayList<>();
-//        while(data.moveToNext()){
-//            listData.add(data.getString(1));
-//            listData.add(data.getString(2));
-//
-//
-//        }
+        //An ArrayList inside of ArrayList, since we are displaying 3 info of an item
         ArrayList<ArrayList<String>> listData = new ArrayList<ArrayList<String>>();
         while(data.moveToNext()){
             ArrayList<String> oneitem =new ArrayList<String>();
-
+            //The info we want to display are date, price and description
             oneitem.add(data.getString(1));
             oneitem.add(data.getString(3));
             oneitem.add(data.getString(4));
@@ -82,17 +97,18 @@ public class ListDataActivity extends AppCompatActivity {
         }
         //for debugging
         Log.d(TAG,"populateListView: Displaying"+listData+" in the ListView.");
+        //Display it with adapter
         ListAdapter adapter =new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,listData);
         mListView.setAdapter(adapter);
 
-
+        //when a click happens:
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ArrayList<String> selectedItem = (ArrayList<String>) adapterView.getItemAtPosition(i);
                 Log.d(TAG, "onItemClick: You Clicked on " + selectedItem);
 
-                Cursor data = mDatabaseHelper.getItemID(selectedItem); //get the id associated with that name
+                Cursor data = mDatabaseHelper.getItemID(selectedItem); //get the id associated with that item
 
                 Log.d(TAG, "onItemClick: data retrived Clicked on " + data);
                 //some error handling
@@ -115,7 +131,7 @@ public class ListDataActivity extends AppCompatActivity {
                     }
 
 
-
+                    //save of the data, since we will need it later for updating
                     Intent editScreenIntent = new Intent(ListDataActivity.this, EditDataActivity.class);
                     editScreenIntent.putExtra("id",itemID);
                     editScreenIntent.putExtra("date", selectedItem.get(0));
@@ -139,43 +155,13 @@ public class ListDataActivity extends AppCompatActivity {
                 }
             }
         });
-//        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                String name = adapterView.getItemAtPosition(i).toString();
-//                Log.d(TAG, "onItemClick: You Clicked on " + name);
-//
-//                Cursor data = mDatabaseHelper.getItemID(name); //get the id associated with that name
-//
-//                //some error handling
-//                int itemID = -1;
-//                while(data.moveToNext()){
-//                    itemID = data.getInt(0);
-//                }
-//                if(itemID > -1){
-//                    Log.d(TAG, "onItemClick: The ID is: " + itemID);
-//                    Intent editScreenIntent = new Intent(ListDataActivity.this, EditDataActivity.class);
-//                    editScreenIntent.putExtra("id",itemID);
-//                    editScreenIntent.putExtra("date",name);
-//                    startActivity(editScreenIntent);
-//                }
-//                else{
-//                    toastMessage("No ID associated with that name");
-//                }
-//            }
-//        });
-
-
-
-
-
 
 
 
     }
     private void toastMessage(String message){
         Toast toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
-//        toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.START, 0, 0);
+        //Position it
         toast.setGravity(Gravity.BOTTOM|Gravity.LEFT, 100, 200);
         toast.show();
     }

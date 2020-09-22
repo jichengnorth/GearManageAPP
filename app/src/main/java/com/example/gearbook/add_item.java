@@ -15,6 +15,16 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Calendar;
+/**
+ * Created by Jason Zhao on Sept/20/2020.
+ * Copyright is reserved
+ */
+
+//This class handles all the adding when users is trying to add an item.
+//The thinking is, on this page, you can hint save button to save it, it will bring up a toast message
+//for you to indicate whether it went successful. And it won't bring you to another activity, this way
+// it will maximize efficiency of adding items.
+//Modified and reference to https://github.com/mitchtabian/SaveReadWriteDeleteSQLite/blob/master/SaveAndDisplaySQL/app/src/main/java/com/tabian/saveanddisplaysql/MainActivity.java
 
 public class add_item extends AppCompatActivity {
 
@@ -59,16 +69,16 @@ public class add_item extends AppCompatActivity {
 
                 // input checking
                 if (price.length() != 0 && maker.length() !=0 && date.length() !=0 && description.length() !=0) {
+                    //Since Comment is not required entry, we need to handle this
                     if (comment.length() ==0){
-                        comment = "'nothing entered' ";
+                        comment = "[nothing entered]";
                     }
                         AddData(date,maker,description,price,comment);
                  //   editText.setText("");
                 } else {
                     toastMessage("You must put something in the text field!");
                 }
-//                Intent intent =new Intent(add_item.this, ListDataActivity.class);
-//                startActivity(intent);
+
             }
         });
 
@@ -120,7 +130,7 @@ public class add_item extends AppCompatActivity {
         };
 
     }
-
+    //adding everything to Database
     public void AddData ( String date,String maker,String description,String price, String comment ){
         boolean insertData =mDatabaseHelper.addData(date,maker,description,price,comment);
 
