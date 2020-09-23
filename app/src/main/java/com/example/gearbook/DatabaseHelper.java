@@ -48,6 +48,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     //add of the columns into the table, and return whether it is successful,
     //reference to https://github.com/mitchtabian/SaveReadWriteDeleteSQLite/blob/master/SaveAndDisplaySQL/app/src/main/java/com/tabian/saveanddisplaysql/EditDataActivity.java
+
+
+    /**
+     * get all the data  of the item
+     * @param  date, maker, description, price,comment
+     * @return Boolean
+     *
+     */
+
     public boolean addData(String date,String maker,String description,String price, String comment) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -151,7 +160,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param price, id, newDate,newMaker,newDescription, newPrice, newComment
      *
      */
-    public void updateName( String price, int id, String newDate,String newMaker,String newDescription,String newPrice, String newComment){
+    public void updateItem( String price, int id, String newDate,String newMaker,String newDescription,String newPrice, String newComment){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + TABLE_NAME + " SET " + COL2 +
                 " = '" + newDate +"'," + COL3 + "='"+ newMaker +"'," + COL4 + "='"+ newDescription +"'," + COL5 + "='"+ newPrice +"'," + COL6 + "='"+ newComment    + "' WHERE " + COL1 + " = '" + id + "'" +

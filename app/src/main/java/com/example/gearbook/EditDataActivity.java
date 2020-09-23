@@ -94,7 +94,7 @@ public class EditDataActivity extends AppCompatActivity {
                     if (comment.length() ==0){
                         comment = "[nothing enter]";
                     }
-                    mDatabaseHelper.updateName(selectedPrice,selectedID,date,maker,description,price,comment);
+                    mDatabaseHelper.updateItem(selectedPrice,selectedID,date,maker,description,price,comment);
                     Intent intent = new Intent(EditDataActivity.this, ListDataActivity.class);
                     startActivity(intent);
 

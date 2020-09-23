@@ -36,7 +36,7 @@ public class add_item extends AppCompatActivity {
 
     //for the database
 
-    DatabaseHelper mDatabaseHelper;
+    public DatabaseHelper mDatabaseHelper;
     private Button saveButton,viewButton;
     private EditText entry_price, entry_maker, entry_description,entry_comment;
     private String date;
